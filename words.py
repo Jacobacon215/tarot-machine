@@ -27,7 +27,7 @@ hanged_words = {'reflection', 'waiting',
 death_words = {'graduation', 'graduate', 'summer',
                'quarter', 'end', 'moving', 'meaning of life'}
 temp_words = {'grades', 'curve', 'mental health',
-              'therapy', 'depress', 'canvas', 'assignment'}
+              'therapy', 'depressed','depression', 'canvas', 'assignment'}
 devil_words = {'situationship', 'judge',
                'scav', 'procrastinate', 'lazy', 'laziness'}
 tower_words = {'midterm', 'exam', 'grades', 'partner',
@@ -47,19 +47,32 @@ tarot_cards = ["fool", "magic", "highpriestess", "empress", "emperor", "hieropha
                "temperance", "devil", "tower", "star", "moon", "sun", "judgment", "world"]
 
 
-question_asked = input("What question do you seek answered?")
-stripped_q = question_asked.lower().split(' ')
-final_q = [w.strip(string.punctuation) for w in stripped_q]
+
 
 
 def main():
     return None
 
 
-def find_cards(question):
+def find_cards():
+    question_asked = input("What question do you seek answered?")
+    stripped_q = question_asked.lower().split(' ')
+    final_q = [w.strip(string.punctuation) for w in stripped_q]
     card_set_dict = {x[0]: x[1] for x in zip(tarot_cards, all_words_list)}
     card_score_dict = {x: 0 for x in tarot_cards}
-    for word in question:
+    for word in final_q:
         for cardname, wordset in card_set_dict.items():
             if word in wordset:
-                card_score_dict[word] += 1
+                card_score_dict[cardname] += 1
+    selected=sorted(card_score_dict, key=card_score_dict.get, reverse=True)[0:2]
+    return(selected)
+
+cards_found=find_cards()
+
+def give_answers(cards):
+    card_def={'fool':'leap of faith, step into the unknown', 'magician':'the tools are in front of you, you should act', 'high priestess':'hidden widsom covered by overthinking',
+              'empress':'nurture creativity and joy','emperor':'structure, boundaries, authority', 'hierophant':'there is value in tradition, but which rules are you following and why?',
+              'lovers':'romance, integrity, follow your heart, at a crossroad', 'chariot':'move forward with purpose, steer with will and wisdom','strength':'tenderness can be strength. rise from struggle',
+              'hermit':'retreat to reflect, inner wisdom','wheel of fortune':'change is the only constant. life has ups and downs','justice':'balance the scales, truth will prevail',
+              'hanged man':'new perspective needed, wait and see. stuck or stagnant','death':'endings, change, new beginnings. let go of the old to make room for new.'}
+give_answers(cards_found)
