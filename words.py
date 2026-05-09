@@ -73,7 +73,9 @@ def give_answers(cards):
               'lovers':'romance, integrity, follow your heart, at a crossroad', 'chariot':'move forward with purpose, steer with will and wisdom','strength':'tenderness can be strength. rise from struggle',
               'hermit':'retreat to reflect, inner wisdom','wheel of fortune':'change is the only constant. life has ups and downs','justice':'balance the scales, truth will prevail',
               'hanged man':'new perspective needed, wait and see. stuck or stagnant','death':'endings, change, new beginnings. let go of the old to make room for new.',
-              'temperance':"don't rush outcomes, you can't control them", 'devil':'trapped in your own thoughts, a self-prison'}
+              'temperance':"don't rush outcomes, you can't control them", 'devil':'trapped in your own thoughts, a self-prison', 'tower':'sudden upheaval. current structure was built on shaky foundations.',
+              'star':'hope after upheaval. healing, renewal.', 'moon':'truth will be revealed. cloudy at the moment, but trust your instincts.', 'sun':'optimism, release self-doubt. welcome joy into your life.',
+              'judgment':'evolution, clarity, a rise to the next stage', 'world':'success, completion, reflection. the world is at your feet!'}
 
 if __name__=="__main__":
     cards_found=find_cards()
