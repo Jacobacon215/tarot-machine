@@ -67,12 +67,14 @@ def find_cards():
     selected=sorted(card_score_dict, key=card_score_dict.get, reverse=True)[0:2]
     return(selected)
 
-cards_found=find_cards()
-
 def give_answers(cards):
     card_def={'fool':'leap of faith, step into the unknown', 'magician':'the tools are in front of you, you should act', 'high priestess':'hidden widsom covered by overthinking',
               'empress':'nurture creativity and joy','emperor':'structure, boundaries, authority', 'hierophant':'there is value in tradition, but which rules are you following and why?',
               'lovers':'romance, integrity, follow your heart, at a crossroad', 'chariot':'move forward with purpose, steer with will and wisdom','strength':'tenderness can be strength. rise from struggle',
               'hermit':'retreat to reflect, inner wisdom','wheel of fortune':'change is the only constant. life has ups and downs','justice':'balance the scales, truth will prevail',
-              'hanged man':'new perspective needed, wait and see. stuck or stagnant','death':'endings, change, new beginnings. let go of the old to make room for new.'}
-give_answers(cards_found)
+              'hanged man':'new perspective needed, wait and see. stuck or stagnant','death':'endings, change, new beginnings. let go of the old to make room for new.',
+              'temperance':"don't rush outcomes, you can't control them", 'devil'}
+
+if __name__=="__main__":
+    cards_found=find_cards()
+    give_answers(cards_found)
