@@ -23,7 +23,16 @@ moon_words=['uncertain','confused','experiment','tryout', 'try','interview']
 sun_words=['stress','difficult','uchicago','scav','weather','mothers day','meaning of life']
 judge_words=['graduate','judgment','points','item','showcase','ida noyes','david rubenstein','david m rubenstein','religion','church','god']
 world_words=['victory','win','graduation','judgeship','celebration','time']
+all_words_list=[fool_words, magic_words,hp_words, empress_words,emperor_words,hiero_words,lover_words,chariot_words,strength_words,hermit_words,wheel_words, justice_words, hanged_words, death_words, temp_words,devil_words, tower_words, star_words, moon_words, sun_words, judge_words, world_words]
 
 question_asked = input("What question do you seek answered?")
 stripped_q = question_asked.lower().split(' ')
 final_q = [w.strip(string.punctuation) for w in stripped_q]
+def main():
+    return None
+
+def find_cards(question):
+    for word in question:
+        if word in fool_words:
+            fool+=1
+        if word in mag
