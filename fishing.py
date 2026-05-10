@@ -1,10 +1,126 @@
 import pygame
+import words
 from random import randint, choice
 
 FPS = 60
 
+# GLOBAL VARIABLE DEFINITION FOR IMAGE USE
+tarot_cards = ["tower"]
+cards = {card: (pygame.image.load(f"assets/the_{card}_sprite.png"),
+                pygame.image.load(f"assets/the_{card}_full.png"))
+         for card in tarot_cards}
 
-def run():
+
+def display_reading(card_array, synthesis, screen, clock):
+    # initialization
+    running = True
+    proceed = False
+    full_x = 200
+    full_y = 90
+    full_real_y = 1080
+    pull_full_percent = 0
+    pull_full_speed = 10
+    pull_full_max = 900
+    full_width = 522
+    pull_frames = 0
+    pull_frames_target = 120
+    text = False
+    title_x = full_x + full_width + 100
+    title_y = full_y + 25
+    desc_x = title_x
+    desc_y = title_y + 110
+    index = 0
+    synthesizing = False
+    synthesis_x = 300
+    synthesis_y = 100
+
+    # assets
+    background = pygame.image.load("assets/tarot_background.png")
+    title_font = pygame.font.Font(
+        "/usr/share/fonts/truetype/fonts-yrsa-rasa/Yrsa-SemiBold.ttf", size=110)
+    desc_font = pygame.font.Font(
+        "/usr/share/fonts/truetype/fonts-yrsa-rasa/Yrsa-SemiBold.ttf", size=80)
+
+    texts = {x[0]: (
+        temp1 := title_font.render(x[0].capitalize(), True, pygame.Color(0, 0, 0, 0)),
+        temp2 := desc_font.render(x[1], True, pygame.Color(0, 0, 0, 0)),
+        temp3 := pygame.Rect(title_x - 10, title_y - 10,
+                             temp2.get_width() + 20, temp1.get_height() + temp2.get_height() + 20),
+        pygame.Surface((temp3.width, temp3.height))
+    ) for x in card_array}
+
+    synthesis_text = desc_font.render(
+        synthesis, True, pygame.Color(0, 0, 0, 0))
+    synthesis_surface = pygame.Surface((20 + synthesis_text.get_width() +
+                                        20, 20 + synthesis_text.get_height() + 20))
+    synthesis_surface.set_alpha(100)
+    synthesis_surface.fill((200, 200, 200))
+
+    for _, val in texts.items():
+        val[3].set_alpha(100)
+        val[3].fill((200, 200, 200))
+
+    # loop
+    while running:
+        # poll for events
+        # pygame.QUIT event means clicked X to close window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                exit(0)
+            if event.type == pygame.KEYDOWN:
+                match event.key:
+                    case pygame.K_q:
+                        running = False
+                    case pygame.K_SPACE:
+                        proceed = True
+
+        # logic
+        if proceed:
+            full_real_y = 1080
+            pull_full_percent = 0
+            index += 1
+            proceed = False
+
+        if index == 3:
+            synthesizing = True
+        elif index >= 4:
+            return
+
+        if not synthesizing:
+            if pull_full_percent < pull_full_max:
+                pull_full_percent += pull_full_speed
+            elif pull_full_percent > pull_full_max:
+                pull_full_percent = pull_full_max
+
+            if full_real_y > full_y:
+                full_real_y -= pull_full_speed
+            elif full_real_y < full_y:
+                full_real_y = full_y
+        elif synthesizing:
+            pass
+
+        # rendering
+        screen.blit(background, (0, 0))
+
+        if not synthesizing:
+            screen.blit(cards[card_array[index][0]][1], (full_x, full_real_y),
+                        area=pygame.Rect(0, 0, full_width, pull_full_percent))
+            if full_real_y <= full_y:
+                screen.blit(texts[card_array[index][0]][3],
+                            texts[card_array[index][0]][2].topleft)
+                screen.blit(texts[card_array[index][0]][0], (title_x, title_y))
+                screen.blit(texts[card_array[index][0]][1], (desc_x, desc_y))
+        elif synthesizing:
+            screen.blit(synthesis_surface,
+                        (synthesis_x - 20, synthesis_y - 20))
+            screen.blit(synthesis_text, (synthesis_x, synthesis_y))
+
+        pygame.display.flip()
+        dt = clock.tick(60)/1000
+
+
+def fishing_minigame():
     dt = 0
     framecount = 0
     pygame.init()
@@ -24,10 +140,10 @@ def run():
     card_width = 116
     pull_frames = 0
     pull_percent = 0
-    pull_speed = 3
+    pull_speed = 5
     pull_percent_max = 200
     pull_full_percent = 0
-    pull_full_speed = 8
+    pull_full_speed = 10
     pull_full_max = 900
     full_width = 522
 
@@ -44,7 +160,7 @@ def run():
     card_x = alex_x + 50
     card_y = alex_y + 20
     full_x = 699
-    full_y = 990
+    full_y = 90
     full_real_y = 1080
 
     # asset loading
@@ -58,10 +174,8 @@ def run():
     fish = pygame.image.load("assets/fish.png")
     progress_bar = pygame.image.load("assets/progress_bar.png")
 
-    cards = {}
-    cards['tower'] = (pygame.image.load("assets/the_tower_sprite.png"),
-                      pygame.image.load("assets/the_tower_full.png"))
-    card = None
+    cards_to_pull = []
+    cards_pulled = 0
 
     # game loop
     while running:
@@ -80,8 +194,15 @@ def run():
                             done = False
                             active_alex = alex2
                             alex_y += 150
+                            # cards_to_pull = words.choose_cards()
+                            cards_to_pull = [
+                                ("tower", "description"), ("tower", "description"), ("tower", "description")]
+                    case pygame.K_t:
+                        display_reading([("tower", "description"), ("tower",
+                                        "description"), ("tower", "description")], "test synthesis.", screen, clock)
 
         # now do game logic
+
         if done and casting:
             casting = False
             fish_bar_y = fish_back_y + 355
@@ -89,11 +210,16 @@ def run():
             alex_y -= 150
             catch_percent = 0
             pulling = True
-            card = choice(list(cards.values()))
             pull_percent = 0
             pull_frames = 0
             pull_full_percent = 0
             full_real_y = 1080
+
+        if cards_pulled == 3:
+            display_reading(
+                cards_to_pull[0], cards_to_pull[1], cards_to_pull[2], screen, clock)
+            cards_to_pull = []
+            cards_pulled = 0
 
         if pulling:
             if pull_percent < pull_percent_max:
@@ -103,16 +229,17 @@ def run():
 
             if pull_percent == pull_percent_max:
                 if pull_full_percent < pull_full_max:
-                    pull_percent += pull_full_speed
-                elif pull_percent > pull_full_max:
-                    pull_percent = pull_percent_max
+                    pull_full_percent += pull_full_speed
+                elif pull_full_percent > pull_full_max:
+                    pull_full_percent = pull_full_max
 
-            if pull_full_percent == pull_full_max and full_real_y < full_y:
+            if pull_percent == pull_percent_max and full_real_y > full_y:
                 full_real_y -= pull_full_speed
-            elif pull_full_percent == pull_full_max and full_real_y >= full_y:
+            elif pull_percent == pull_percent_max and full_real_y <= full_y:
                 pull_frames += 1
 
-            if pull_frames == 48:
+            if pull_frames == 120:
+                cards_pulled += 1
                 pulling = False
 
         if fish_y - fish_speed <= fish_target_y <= fish_y + fish_speed:
@@ -158,9 +285,9 @@ def run():
         screen.blit(active_alex, (alex_x, alex_y))
 
         if pulling:
-            screen.blit(cards['tower'][0], (card_x, card_y + (pull_percent_max - pull_percent)),
+            screen.blit(cards[cards_to_pull[cards_pulled][0]][0], (card_x, card_y + (pull_percent_max - pull_percent)),
                         area=pygame.Rect(0, 0, card_width, pull_percent))
-            screen.blit(cards['tower'][1], (full_x, full_real_y),
+            screen.blit(cards[cards_to_pull[cards_pulled][0]][1], (full_x, full_real_y),
                         area=pygame.Rect(0, 0, full_width, pull_full_percent))
 
         # rendering
@@ -170,4 +297,4 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    fishing_minigame()
