@@ -79,9 +79,12 @@ def give_answers(cards):
               'temperance':"don't rush outcomes, you can't control them", 'devil':'trapped in your own thoughts, a self-prison', 'tower':'sudden upheaval. current structure was built on shaky foundations.',
               'star':'hope after upheaval. healing, renewal.', 'moon':'truth will be revealed. cloudy at the moment, but trust your instincts.', 'sun':'optimism, release self-doubt. welcome joy into your life.',
               'judgment':'evolution, clarity, a rise to the next stage', 'world':'success, completion, reflection. the world is at your feet!'}
+    result=[]
     for cardpicked in cards:
         print(cardpicked, ":")
         print(card_def[cardpicked])
+        result.append((cardpicked, card_def[cardpicked]))
+    return result
 if __name__=="__main__":
     cards_found=find_cards()
     give_answers(cards_found)
